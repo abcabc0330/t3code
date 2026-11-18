@@ -66,9 +66,11 @@ const gemini: AcpRegistrySearchAgent = {
 function Step({
   configured = false,
   onPrepared = vi.fn(),
+  onOhMyPiPreset,
 }: {
   readonly configured?: boolean;
   readonly onPrepared?: (agent: AcpRegistrySearchAgent) => void;
+  readonly onOhMyPiPreset?: () => void;
 }) {
   const registry = useAcpRegistrySearch(environmentId, true);
   return (
@@ -87,6 +89,7 @@ function Step({
       }
       onPrepared={onPrepared}
       onManualConfiguration={vi.fn()}
+      {...(onOhMyPiPreset === undefined ? {} : { onOhMyPiPreset })}
     />
   );
 }
@@ -132,6 +135,16 @@ it("bounds pasted registry searches before debounce and submission", async () =>
   await userEvent.keyboard("{Enter}");
   expect(state.refresh).toHaveBeenCalledTimes(1);
   await expect.element(searchbox).toHaveValue("agent".repeat(24));
+});
+
+it("offers the Oh My Pi local preset without a Registry entry", async () => {
+  setup();
+  const onOhMyPiPreset = vi.fn();
+  await using _screen = await render(<Step onOhMyPiPreset={onOhMyPiPreset} />);
+
+  await page.getByRole("button", { name: "Oh My Pi" }).click();
+
+  expect(onOhMyPiPreset).toHaveBeenCalledTimes(1);
 });
 
 it("leaves out Registry agents that T3 Code supports as their own providers", async () => {

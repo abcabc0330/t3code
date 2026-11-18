@@ -56,6 +56,7 @@ vi.mock(import("./AcpRegistrySearchStep"), async (original) => ({
     onPrepared: (agent: AcpRegistrySearchAgent) => void;
     onManualConfiguration: () => void;
     onLocalConfiguration: () => void;
+    onOhMyPiPreset: () => void;
   }) => (
     <div>
       <button type="button" onClick={() => props.onPrepared(preparedAgent)}>
@@ -66,6 +67,9 @@ vi.mock(import("./AcpRegistrySearchStep"), async (original) => ({
       </button>
       <button type="button" onClick={props.onLocalConfiguration}>
         Use local command
+      </button>
+      <button type="button" onClick={props.onOhMyPiPreset}>
+        Use Oh My Pi preset
       </button>
     </div>
   )) as never,
@@ -289,6 +293,28 @@ describe("AddProviderInstanceDialog environment routing", () => {
     });
     expect(actions.onOpenChange).toHaveBeenCalledWith(false);
     expect(signInStep()).toBeNull();
+  });
+
+  it("creates the Oh My Pi local ACP preset from one click", async () => {
+    setup();
+    await using _screen = await render(dialog());
+    await click("Show more");
+    await click("Use Oh My Pi preset");
+
+    expect(input("#add-provider-label").value).toBe("Oh My Pi");
+    await click("Add instance");
+
+    expect(settingsHooks.mutate).toHaveBeenCalledWith({
+      operation: "create",
+      instanceId: "acpRegistry_oh_my_pi",
+      instance: {
+        driver: "acpRegistry",
+        enabled: true,
+        displayName: "Oh My Pi",
+        config: { source: "local", commandPath: "omp", commandArgs: ["acp"] },
+      },
+    });
+    expect(actions.onOpenChange).toHaveBeenCalledWith(false);
   });
 
   it("rejects a queued save after the provider grant is revoked", async () => {

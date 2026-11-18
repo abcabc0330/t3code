@@ -138,6 +138,7 @@ interface AcpRegistrySearchStepProps {
   readonly onPrepared: (agent: AcpRegistrySearchAgent) => void;
   readonly onManualConfiguration: () => void;
   readonly onLocalConfiguration?: () => void;
+  readonly onOhMyPiPreset?: () => void;
 }
 
 export function AcpRegistrySearchStep({
@@ -147,6 +148,7 @@ export function AcpRegistrySearchStep({
   onPrepared,
   onManualConfiguration,
   onLocalConfiguration,
+  onOhMyPiPreset,
 }: AcpRegistrySearchStepProps) {
   const gt = useGT();
   const canManageProviders = useEnvironmentScope(environmentId, AuthProvidersManageScope);
@@ -198,6 +200,18 @@ export function AcpRegistrySearchStep({
         >
           <T>Enter manually</T>
         </Button>
+        {onOhMyPiPreset ? (
+          <Button
+            disabled={preparingId !== null}
+            onClick={onOhMyPiPreset}
+            size="sm"
+            type="button"
+            variant="outline"
+          >
+            {/* oxlint-disable-next-line t3code/no-untranslated-copy -- product name */}
+            Oh My Pi
+          </Button>
+        ) : null}
         {onLocalConfiguration ? (
           <Button
             disabled={preparingId !== null}

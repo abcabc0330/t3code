@@ -32,7 +32,8 @@ code; review an agent's source and license before adding it.
 
 In **Settings → Providers → Add provider**, select **Show more**, then **Local ACP command**. Enter the executable
 name or path on the selected environment, add one literal argument per row, and choose a display
-name. For DeepSeek Harness, use `dsh` with arguments `--profile` and `acp`.
+name. For DeepSeek Harness, use `dsh` with arguments `--profile` and `acp`. For Oh My Pi,
+choose **Oh My Pi**, or use `omp` with the argument `acp`.
 
 Local commands require no registry entry or download. Environment overrides apply to the command;
 credentials and skills remain managed by the installed agent or its wrapper. Models and reasoning
